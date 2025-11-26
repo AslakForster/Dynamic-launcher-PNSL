@@ -1,0 +1,39 @@
+[package]
+name = "dynamic_launcher"
+version = "1.0.0"
+edition = "2021"
+authors = ["Christopher Forster"]
+license = "PNSL"
+publish = false
+
+[dependencies]
+eframe = { version = "0.33", default-features = true }
+webbrowser = "1.0"
+
+winapi = { version = "0.3", features = [
+    "winuser",
+    "shellapi",
+    "tlhelp32",
+    "processthreadsapi",
+    "synchapi",
+    "handleapi",
+    "libloaderapi",
+    "winreg",
+    "winnt",
+    "minwinbase",
+    "sysinfoapi",
+    "winbase",
+] }
+
+[profile.release]
+# Max safety + tiny binary
+opt-level = "z"          # optimize for size
+lto = "fat"              # best cross-crate optimisation (smaller exe, slower build)
+codegen-units = 1        # better global optimisation, smaller code
+
+panic = "unwind"         # keep stack unwinding on panic (Drop still runs)
+overflow-checks = true   # keep integer overflow checks in release
+
+strip = "symbols"        # strip most symbols from final .exe
+debug = 0                # no debug info in release binary
+incremental = false      # fully optimised, no incremental artifacts
